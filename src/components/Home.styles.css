@@ -1,0 +1,12 @@
+.artice-header{
+    background-color: teal;
+    color: white;
+    border: 3px solid transparent;
+    text-align: center;
+}
+
+.section-content {
+    margin-top: 15px;
+    margin-right: 10%;
+    margin-left: 10%;
+}
