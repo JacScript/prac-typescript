@@ -5,11 +5,9 @@ export interface IEmployee {
     email: string;
 }
 
-export  const dummyEmployeeList: IEmployee[] = [
-    {
-    id: new Date().toJSON().toString(),
-    firstName: "Miles",
-    lastName: "Jac",
-    email: "milesjac@gmail.com",
+
+export enum PageEnum {
+    list,
+    add,
+    edit,
 }
-];

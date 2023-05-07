@@ -10,3 +10,9 @@
     margin-right: 10%;
     margin-left: 10%;
 }
+
+.add-employee-btn {
+    float: right;
+    color: teal;
+    margin-bottom:5px;
+}

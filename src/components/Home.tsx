@@ -1,22 +1,94 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./Home.styles.css";
-import { IEmployee, dummyEmployeeList } from "./Employee.type";
+import { IEmployee, PageEnum} from "./Employee.type";
 import EmployeeList from "./EmployeeList";
+import AddEmployee from "./AddEmployee";
+import EditEmployee from "./EditEmployee";
 
 
 const Home = () => {
 
-    const [employeeList, setEmployeeList] = useState( dummyEmployeeList as IEmployee[])
-    return ( 
+    const [employeeList, setEmployeeList] = useState([] as IEmployee[]);
+    const [dataToEdit, setDataToEdit] = useState({} as IEmployee);
+    const [shownPage, setShownPage] = useState(PageEnum.list);
+
+    useEffect(() => {
+        const listInString = window.localStorage.getItem("EmployeeList");
+        if(listInString){
+            _setEmployeeList(JSON.parse(listInString));
+        }
+    }, []);
+
+    const onAddEmployeeClickHandler = () => {
+        setShownPage(PageEnum.add);
+    };
+
+    const showListPage = () => {
+        setShownPage(PageEnum.list);
+    }
+
+    const _setEmployeeList = (list:IEmployee[]) => {
+        setEmployeeList(list);
+        window.localStorage.setItem("EmployeeList",JSON.stringify(list)); 
+    }
+
+    const addEmployeeHandler = (data: IEmployee) => {
+          _setEmployeeList([...employeeList, data])
+    }
+
+    const deleteEmployee = (data: IEmployee) => {
+        //To Index from array i,e employeelist
+        //Splice
+        //Update new record
+
+        const indexToDelete = employeeList.indexOf(data);
+        const tempList = [...employeeList];
+
+        tempList.splice(indexToDelete,1);
+        _setEmployeeList(tempList);
+    }
+
+    const editEmployeeData = (data: IEmployee) => {
+        setShownPage(PageEnum.edit); 
+        setDataToEdit(data);
+    }
+
+    const updateData = (data:IEmployee) => {
+       const filteredData = employeeList.filter(x => x.id === data.id)[0];
+       employeeList.indexOf(filteredData);
+       const indexOfRecord = employeeList.indexOf(filteredData);
+       const tempData = [...employeeList] ;
+       tempData[indexOfRecord] = data;
+       _setEmployeeList(tempData);
+    }
+
+    return (
         <>
-         <article className="artice-header">
-            <header>
-                <h1>React: CRUP APP</h1>
-            </header>
-         </article>
-         <section className="section-content">
-            <EmployeeList list={employeeList}  />
-         </section>
+            <article className="artice-header">
+                <header>
+                    <h1>React: CRUP APP</h1>
+                </header>
+            </article>
+            <section className="section-content">
+                {shownPage === PageEnum.list && (
+                   <>
+                   <input 
+                       type="button" 
+                       value="Add Employee"
+                       onClick= {onAddEmployeeClickHandler}
+                       className="add-employee-btn"/>
+                    <EmployeeList 
+                       list={employeeList} onDeleteClickedHandle={deleteEmployee}
+                       onEdit={editEmployeeData}
+                       />
+                   </>
+                )}
+
+                {shownPage === PageEnum.add && (<AddEmployee onBackButtonClickHandler={showListPage} onSubmitClickHandler={addEmployeeHandler}/>)}
+
+            {shownPage === PageEnum.edit && <EditEmployee data={dataToEdit} onBackButtonClickHandler={showListPage} onUpdatedClickedHandler={updateData}/>
+            }
+            </section>
         </>
     )
 };
